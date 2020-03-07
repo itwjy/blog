@@ -1,0 +1,84 @@
+{{extend '../_layouts/home.html'}}
+
+{{block 'title'}}{{'多人博客 - 首页'}}{{/block}}
+
+{{block 'body'}}
+<section class="container">
+  <div class="row">
+    <div class="col-md-5">
+      <form id="new_form">
+        <div class="form-group">
+          <label for="exampleInputEmail1">选择板块</label>
+          <select class="form-control" name="plate">
+            <option>分享</option>
+            <option>问答</option>
+            <option>招聘</option>
+            <option>客户端测试</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">标题</label>
+          <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Please enter a title
+          " name="title">
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">内容</label>
+          <textarea class="form-control" rows="3" placeholder="Please enter content
+          " name="content"></textarea>
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+    </div>
+  </div>
+</section>
+{{/block}}
+
+{{ block 'script' }}
+<script>
+  $(function () {
+    $('.userInfo').on('click', function () {
+      $('.userCount').toggle()
+    })
+    $('#new_form').on('submit', function (e) {
+      e.preventDefault()
+      let formData = $(this).serialize()
+      formData += `&nickname=${$('.userInfo').text().replace(/\s+/g, '')}`
+      $.ajax({
+        type: 'POST',
+        url: '/publish',
+        data: formData,
+        dataType: 'json',
+        success: function (data) {
+          console.log(data)
+          if (data.code === 0) {
+            window.alert('发布成功,即将跳转')
+            window.location.href = '/'
+          } else {
+            window.alert('发送失败，请重试')
+          }
+        }
+      })
+    })
+  })
+  // $('#new_form').on('submit', function (e) {
+  //     e.preventDefault()
+  //     var formData = $(this).serialize()
+  //     $.ajax({
+  //       url: '/topics/new',
+  //       type: 'post',
+  //       data: formData,
+  //       dataType: 'json',
+  //       success: function (data) {
+  //         var err_code = data.err_code
+  //         if (err_code === 0) {
+  //           window.alert('发布成功，即将跳转！')
+  //           // 服务端重定向针对异步请求无效
+  //           window.location.href = '/'
+  //         } else if (err_code === 500) {
+  //           window.alert('发布失败，请稍后重试！')
+  //         }
+  //       }
+  //     })
+  //   })
+</script>
+{{ /block }}
